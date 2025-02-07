@@ -8,10 +8,10 @@ import Navbar from "@/components/layout/navbar";
 import { ClerkProvider } from "@clerk/nextjs";
 
 export const metadata = {
-  title: "Precedent - Building blocks for your Next.js project",
+  title: "HR Employee App",
   description:
-    "Precedent is the all-in-one solution for your Next.js project. It includes a design system, authentication, analytics, and more.",
-  metadataBase: new URL("https://precedent.dev"),
+    "A mirror copy of the already existing HR Employee App, but with a new design and new features.",
+  metadataBase: new URL("https://hr-employee-app.vercel.app/"),
 };
 
 export default async function RootLayout({

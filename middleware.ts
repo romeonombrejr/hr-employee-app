@@ -1,18 +1,9 @@
-import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
-
+import { clerkMiddleware, createRouteMatcher, auth } from '@clerk/nextjs/server'
 
 const isProtectedRoute = createRouteMatcher(['/dashboard(.*)']);
-const isAdminRoute = createRouteMatcher(['/admin(.*)']);
 
 export default clerkMiddleware(async (auth, req) => {
   if (isProtectedRoute(req)) await auth.protect()
-  
-  if (isAdminRoute(req)) {
-    await auth.protect((has) => {
-      return has({ permission: 'org:admin:digital-feet-1739242686' })
-    })
-  }
-
 })
 
 export const config = {

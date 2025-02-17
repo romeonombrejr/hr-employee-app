@@ -1,13 +1,13 @@
 import { UserButton } from '@clerk/nextjs';
 
-export default function Page() {
+export default function Dashboard() {
   return (
     <div className="p-8">
       <div className="flex justify-between items-center">
-        <h1>Admin</h1>
+        <h1>Document Requests</h1>
         <UserButton afterSignOutUrl="/" />
       </div>
-      {/* Admin */}
+      {/* Dashboard content */}
     </div>
   );
 }

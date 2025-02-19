@@ -1,8 +1,7 @@
 import Image from 'next/image';
 import { SignedOut, SignInButton } from '@clerk/nextjs';
 import { Button } from '@radix-ui/themes';
-import { Tooltip } from "radix-ui";
-import { Separator } from "radix-ui";
+import { Separator, Tooltip } from "radix-ui";
 
 export default function Home() {
   return (

@@ -1,13 +1,27 @@
-import { UserButton } from '@clerk/nextjs';
+import { UserButton } from "@clerk/nextjs";
+import { Box, Section } from "@radix-ui/themes";
+import InfoCards from "../ui/dashboard/info-cards";
+import Menu from "../ui/dashboard/menu";
+import Header from "../ui/dashboard/header";
 
 export default function Dashboard() {
   return (
-    <div className="p-8">
-      <div className="flex justify-between items-center">
-        <h1>Dashboard</h1>
-        <UserButton afterSignOutUrl="/" />
-      </div>
-      {/* Dashboard content */}
-    </div>
+    <Box
+      py="8"
+      style={{
+        backgroundColor: "var(--gray-a2)",
+        borderRadius: "var(--radius-3)",
+      }}
+    >
+      <Section>
+        <Header />
+      </Section>
+      <Section>
+        <InfoCards />
+      </Section>
+      <Section>
+        <Menu />
+      </ Section>
+    </Box>
   );
 }

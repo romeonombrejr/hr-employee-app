@@ -30,7 +30,7 @@ export default function Header() {
       <Text size="8" style={{ margin: 0 }}>
         Good Morning, {isLoaded ? firstName : "..."}
       </Text>
-      <Text as="p" style={{ margin: 0 }}>
+      <Text as="p" size="6" weight="bold" style={{ margin: 0 }}>
         {time.toLocaleTimeString([], {
           hour: "2-digit",
           minute: "2-digit",

@@ -21,7 +21,7 @@ export default function TopNavbar() {
       justify="between"
       style={{
         backgroundColor: "#271A3D",
-        width: 600,
+        width: "full",
         height: 109,
         left: 0,
         top: 0,
@@ -29,7 +29,7 @@ export default function TopNavbar() {
     >
       <Box
         style={{
-          width: 156,
+          width: 120,
           height: 21,
           marginTop: 44,
           display: "flex",
@@ -68,20 +68,20 @@ export default function TopNavbar() {
 
       <Box
         style={{
-          width: 156,
-          height: 21,
-          marginTop: 44,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          color: "white",
-          fontWeight: "bold",
-          fontSize: 16,
-          lineHeight: 21,
-        }}
+            width: 120,
+            height: 21,
+            marginTop: 44,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            color: "white",
+            fontWeight: "bold",
+            fontSize: 16,
+            lineHeight: 21,
+          }}
       >
         {time.toLocaleDateString([], { 
-            month: 'long', 
+            month: 'short', 
             day: 'numeric',
             year: 'numeric', 
         })}

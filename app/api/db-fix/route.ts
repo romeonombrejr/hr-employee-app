@@ -15,7 +15,7 @@ async function seedTimeLogs() {
       CREATE TABLE time_logs (
           id SERIAL PRIMARY KEY,
           employee_id TEXT NOT NULL,
-          clock_in TIMESTAMPTZ NOT NULL,
+          clock_in TIMESTAMPTZ,
           clock_out TIMESTAMPTZ
       );
     `;

@@ -1,3 +1,7 @@
+// import postgres from "postgres";
+// import { AttendanceLogs } from "./definitions";
+
+
 // CREATE TABLE time_logs (
 //     id SERIAL PRIMARY KEY,
 //     employee_id INTEGER REFERENCES employees(id) ON DELETE CASCADE,

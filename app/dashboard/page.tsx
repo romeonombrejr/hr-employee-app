@@ -13,13 +13,13 @@ export default function Dashboard() {
         borderRadius: "var(--radius-3)",
       }}
     >
-      <Section>
+      <Section style={{paddingBlock: 20}}>
         <Header />
       </Section>
-      <Section>
+      <Section style={{paddingBlock: 20}}>
         <InfoCards />
       </Section>
-      <Section>
+      <Section style={{paddingBlock: 30}}>
         <Menu />
       </ Section>
     </Box>

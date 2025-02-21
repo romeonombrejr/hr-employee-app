@@ -9,7 +9,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
 
   return (
-    <Container style={{ margin: "auto", width: "600px" }}>
+    <Container style={{ margin: "auto", width: "430px" }}>
       <TopNavbar />
       <AnimatePresence mode="wait">
         <motion.div

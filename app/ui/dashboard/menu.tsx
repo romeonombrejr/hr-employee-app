@@ -3,14 +3,20 @@
 import React, { useState } from "react";
 import * as Toast from "@radix-ui/react-toast";
 import { useUser } from "@clerk/nextjs";
-import { clockInAction, undoClockInAction } from "@/app/lib/action";
+import {
+  clockInAction,
+  clockOutAction,
+  undoClockInAction,
+  undoClockOutAction,
+} from "@/app/lib/action";
 import { Grid, Button } from "@radix-ui/themes";
+import { useRouter } from "next/navigation";
 
-export default function ClockInToast() {
+export default function Menu() {
   const { user } = useUser();
   const [toastOpen, setToastOpen] = useState(false);
-  // Holds the ID of the clock‑in record returned from the server.
   const [recordId, setRecordId] = useState<number | null>(null);
+  const router = useRouter();
 
   const handleClockIn = async () => {
     if (!user) return;
@@ -27,7 +33,21 @@ export default function ClockInToast() {
     }
   };
 
-  const handleUndo = async () => {
+  const handleClockOut = async () => {
+    if (!user) return;
+
+    const formData = new FormData();
+    formData.append("employeeId", user.id);
+    try {
+      const result = await clockOutAction(formData);
+      setRecordId(result.id);
+      setToastOpen(true);
+    } catch (error) {
+      console.error("Error clocking out:", error);
+    }
+  };
+
+  const handleClockInUndo = async () => {
     if (!recordId) return;
     try {
       // Call the undo server action to remove the clock‑in record.
@@ -38,6 +58,20 @@ export default function ClockInToast() {
     }
   };
 
+  const handleClockOutUndo = async () => {
+    if (!recordId) return;
+    try {
+      await undoClockOutAction(recordId);
+      setToastOpen(false);
+    } catch (error) {
+      console.error("Error undoing clock out:", error);
+    }
+  };
+
+  const handleAttendanceLogClick = () => {
+    router.push("/dashboard/logs");
+  };
+
   return (
     <Grid
       columns="2"
@@ -45,14 +79,17 @@ export default function ClockInToast() {
       width="auto"
       style={{ paddingInline: 20, marginInline: 10 }}
     >
-      {/* The CLOCK IN button triggers the clock in process */}
       <Button onClick={handleClockIn} style={{ padding: 20 }}>
         CLOCK IN
       </Button>
-      <Button style={{ padding: 20 }}>CLOCK OUT</Button>
+      <Button onClick={handleClockOut} style={{ padding: 20 }}>
+        CLOCK OUT
+      </Button>
       <Button style={{ padding: 20 }}>LOG TIME-OFF</Button>
       <Button style={{ padding: 20 }}>LOG OVERTIME</Button>
-      <Button style={{ padding: 20 }}>ATTENDANCE LOG</Button>
+      <Button style={{ padding: 20 }} onClick={handleAttendanceLogClick}>
+        ATTENDANCE LOG
+      </Button>
       <Button style={{ padding: 20 }}>REQUESTS LOG</Button>
 
       {/* Toast provider and UI */}
@@ -62,9 +99,9 @@ export default function ClockInToast() {
           onOpenChange={setToastOpen}
           className="bg-gray-800 text-white p-4 rounded shadow-lg"
         >
-          <Toast.Title>Clock In Recorded</Toast.Title>
+          <Toast.Title>Clock In/Out Recorded</Toast.Title>
           <Toast.Description>
-            <button onClick={handleUndo} className="underline">
+            <button onClick={handleClockInUndo} className="underline">
               Undo
             </button>
           </Toast.Description>

@@ -27,8 +27,8 @@ export default function Header() {
         textAlign: "center",
       }}
     >
-      <Text size="8" style={{ margin: 0 }}>
-        Good Morning, {isLoaded ? firstName : "..."}
+      <Text size="6" style={{ margin: 0 }}>
+        Hey, {isLoaded ? firstName : "..."}
       </Text>
       <Text as="p" size="6" weight="bold" style={{ margin: 0 }}>
         {time.toLocaleTimeString([], {

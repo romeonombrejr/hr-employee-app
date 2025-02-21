@@ -1,9 +1,6 @@
-export default function Dashboard() {
-    return (
-      <div className="p-8">
-        <div className="flex justify-between items-center">
-          <h1>Attendance logs</h1>
-        </div>
-      </div>
-    );
-  }
+import { Grid, Button, Box } from "@radix-ui/themes";
+import Pagination from "@/app/ui/dashboard/logs/pagination";
+
+export default async function Page() {
+    
+ }

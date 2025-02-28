@@ -2,6 +2,8 @@ import { Grid, Button, Box, Section } from "@radix-ui/themes";
 import Pagination from "@/app/ui/dashboard/logs/pagination";
 import LogsTable from "@/app/ui/dashboard/logs/table";
 import DateFilter from "@/app/ui/dashboard/logs/date-filter";
+import { Suspense } from 'react'
+import { DateFilterSkeleton } from "@/app/ui/skeletons";
 
 export default async function Page(
 //   props: {
@@ -31,7 +33,9 @@ export default async function Page(
       }}
     >
       <Section>
-        <DateFilter />
+        <Suspense fallback={<DateFilterSkeleton />}>
+          <DateFilter />
+        </Suspense>
       </Section>
     </Box>
   );

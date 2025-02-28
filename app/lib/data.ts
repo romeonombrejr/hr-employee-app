@@ -27,3 +27,7 @@
 //     request_date TIMESTAMPTZ NOT NULL DEFAULT NOW(),
 //     status TEXT NOT NULL            -- e.g., 'PENDING', 'APPROVED', 'REJECTED'
 //   );
+
+export async function fetchFilteredAttendanceLogs() {
+    
+}

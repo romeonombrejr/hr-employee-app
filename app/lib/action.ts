@@ -38,32 +38,4 @@ export async function undoClockOutAction(clockOutId: number) {
   `;
 }
 
-export async function getAttendanceLogs(
-  employeeId: string,
-  page: number,
-  pageSize: number,
-  from?: string,
-  to?: string
-) {
-  const offset = (page - 1) * pageSize;
 
-  // Query logs with optional date filters.
-  const logs = await sql`
-      SELECT * FROM time_logs
-      WHERE employee_id = ${employeeId}
-      ${from ? sql`AND clock_in >= ${from}` : sql``}
-      ${to ? sql`AND clock_in <= ${to}` : sql``}
-      ORDER BY clock_in DESC
-      LIMIT ${pageSize} OFFSET ${offset}
-    `;
-
-  // Get total count for pagination.
-  const countResult = await sql`
-      SELECT COUNT(*) as count FROM time_logs
-      WHERE employee_id = ${employeeId}
-      ${from ? sql`AND clock_in >= ${from}` : sql``}
-      ${to ? sql`AND clock_in <= ${to}` : sql``}
-    `;
-  const totalCount = Number(countResult[0].count);
-  return { logs, totalCount };
-}

@@ -54,7 +54,6 @@ export default function TopNavbar() {
         }}
       >
         <UserButton
-          afterSignOutUrl="/"
           appearance={{
             elements: {
               rootBox: "w-full h-full",

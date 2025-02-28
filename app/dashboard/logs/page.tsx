@@ -3,21 +3,23 @@ import Pagination from "@/app/ui/dashboard/logs/pagination";
 import LogsTable from "@/app/ui/dashboard/logs/table";
 import DateFilter from "@/app/ui/dashboard/logs/date-filter";
 
-export default async function Page(props: {
-  SearchParams?: Promise<{
-    startDate?: string;
-    endDate?: string;
-    page?: string;
-  }>;
-})  {
+export default async function Page(
+//   props: {
+//   SearchParams?: Promise<{
+//     startDate?: string;
+//     endDate?: string;
+//     page?: string;
+//   }>;
+// }
+)  {
 
-  const searchParams = await props.SearchParams;
-  const startDate = searchParams?.startDate || '';
-  const endDate =
-    searchParams?.endDate ||
-    new Date().toISOString().split('T')[0];
+  // const searchParams = await props.SearchParams;
+  // const startDate = searchParams?.startDate || '';
+  // const endDate =
+  //   searchParams?.endDate ||
+  //   new Date().toISOString().split('T')[0];
 
-  const currentPage = Number(searchParams?.page) || 1;
+  // const currentPage = Number(searchParams?.page) || 1;
 
 
   return (

@@ -1,6 +1,9 @@
-// import postgres from "postgres";
+import postgres from "postgres";
+import { auth } from "@clerk/nextjs/server";
 // import { AttendanceLogs } from "./definitions";
 
+const sql = postgres({ ssl: "require" });
+const ITEMS_PER_PAGE = 10; 
 
 // CREATE TABLE time_logs (
 //     id SERIAL PRIMARY KEY,
@@ -28,6 +31,34 @@
 //     status TEXT NOT NULL            -- e.g., 'PENDING', 'APPROVED', 'REJECTED'
 //   );
 
-export async function fetchFilteredAttendanceLogs() {
-    
-}
+export async function fetchFilteredAttendanceLogs(
+    currentPage: number, 
+    startDate: string = '',
+    endDate: string = ''
+  ) {
+    const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+  
+    try {
+      const { userId } = await auth(); // Get logged-in user's ID
+      if (!userId) throw new Error("User not authenticated");
+  
+      // Fetch logs with optional date filters
+      const logs = await sql`
+        SELECT
+          id,
+          clock_in,
+          clock_out
+        FROM time_logs
+        WHERE employee_id = ${userId}
+        ${startDate ? sql`AND clock_in >= ${startDate}` : sql``}
+        ${endDate ? sql`AND clock_out <= ${endDate}` : sql``}
+        ORDER BY clock_in DESC
+        LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
+      `;
+  
+      return logs;
+    } catch (error) {
+      console.error("Database Error:", error);
+      throw new Error("Failed to fetch attendance logs.");
+    }
+  }

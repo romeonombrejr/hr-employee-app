@@ -33,8 +33,8 @@ const ITEMS_PER_PAGE = 10;
 
 export async function fetchFilteredAttendanceLogs(
     currentPage: number, 
-    startDate: string = '',
-    endDate: string = ''
+    startDate: string,
+    endDate: string
   ) {
     const offset = (currentPage - 1) * ITEMS_PER_PAGE;
   
@@ -55,10 +55,34 @@ export async function fetchFilteredAttendanceLogs(
         ORDER BY clock_in DESC
         LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
       `;
-  
+        console.log(logs);
       return logs;
+      
     } catch (error) {
       console.error("Database Error:", error);
       throw new Error("Failed to fetch attendance logs.");
     }
   }
+
+export async function fetchAttendancePages(startDate: string, endDate: string) {
+  try {
+    // Get the logged-in user's ID
+    const { userId } = await auth();
+    if (!userId) throw new Error("User not authenticated");
+
+    const count = await sql<{ count: number }[]>`
+      SELECT COUNT(*) 
+      FROM time_logs
+      WHERE 
+        employee_id = ${userId} 
+        ${startDate ? sql`AND clock_in >= ${startDate}` : sql``}
+        ${endDate ? sql`AND clock_out <= ${endDate}` : sql``}
+    `;
+
+    const totalPages = Math.ceil(Number(count[0].count) / ITEMS_PER_PAGE);
+    return totalPages;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch total number of attendance logs.");
+  }
+}

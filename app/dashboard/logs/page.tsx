@@ -1,10 +1,10 @@
-import { Grid, Button, Box, Section } from "@radix-ui/themes";
+import { Grid, Flex, Box, Section } from "@radix-ui/themes";
 import Pagination from "@/app/ui/dashboard/logs/pagination";
 import LogsTable from "@/app/ui/dashboard/logs/logs-table";
 import DateFilter from "@/app/ui/dashboard/logs/date-filter";
 import { Suspense } from 'react'
 import { DateFilterSkeleton } from "@/app/ui/skeletons";
-import { fetchFilteredAttendanceLogs } from "@/app/lib/data";
+import { fetchAttendancePages } from "@/app/lib/data";
 
 export default async function Page(props: {
   searchParams?: Promise<{
@@ -17,7 +17,7 @@ export default async function Page(props: {
   const currentPage = Number(searchParams?.page) || 1;
   const startDate = searchParams?.startDate || '';
   const endDate = searchParams?.endDate || '';
-  const totalPages = await fetchFilteredAttendanceLogs(currentPage, startDate, endDate);
+  const totalPages = await fetchAttendancePages(startDate, endDate);
 
 
   return (
@@ -28,15 +28,22 @@ export default async function Page(props: {
         borderRadius: "var(--radius-3)",
       }}
     >
-      <Section>
+      <Section style={{paddingBlock: 20}}>
         <Suspense fallback={<DateFilterSkeleton />}>
           <DateFilter />
         </Suspense>
       </Section>
-      <Section>
+      <Section style={{paddingBlock: 10}}>
         <Suspense>
-          {/* <LogsTable/> */}
+          <LogsTable startDate={startDate} endDate={endDate} currentPage={currentPage} />
         </Suspense>
+      </Section>
+      <Section style={{paddingBlock: 5}}>
+        <Flex justify="center">
+          <Suspense>
+            <Pagination totalPages={totalPages}/>
+          </Suspense>
+        </Flex>
       </Section>
     </Box>
   );

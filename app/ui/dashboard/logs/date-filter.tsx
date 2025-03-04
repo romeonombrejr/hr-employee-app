@@ -2,13 +2,14 @@
 
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import { Box, Flex } from "@radix-ui/themes";
+import { useDebouncedCallback } from 'use-debounce';
 
 export default function DateFilter() {
     const searchParams = useSearchParams();
     const pathname = usePathname();
     const { replace } = useRouter();
 
-    function updateDateParams(key: string, value: string) {
+    const updateDateParams = useDebouncedCallback((key: string, value: string) => {
       const params = new URLSearchParams(searchParams);
       
       if (value) {
@@ -18,7 +19,7 @@ export default function DateFilter() {
       }
       
       replace(`${pathname}?${params.toString()}`);
-    }
+    }, 500); 
 
     return (
       <Flex gap="3" justify="between" style={{paddingInline: 20}}>

@@ -2,15 +2,15 @@
 
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import { Box, Flex } from "@radix-ui/themes";
-import { useDebouncedCallback } from 'use-debounce';
 
 export default function DateFilter() {
     const searchParams = useSearchParams();
     const pathname = usePathname();
     const { replace } = useRouter();
 
-    const updateDateParams = useDebouncedCallback((key: string, value: string) => {
+    function updateDateParams(key: string, value: string) {
       const params = new URLSearchParams(searchParams);
+      params.set('page', '1');
       
       if (value) {
         params.set(key, value);
@@ -19,7 +19,7 @@ export default function DateFilter() {
       }
       
       replace(`${pathname}?${params.toString()}`);
-    }, 500); 
+    }
 
     return (
       <Flex gap="3" justify="between" style={{paddingInline: 20}}>
@@ -29,7 +29,7 @@ export default function DateFilter() {
             type="date" 
             id="start-date"  
             name="start-date"
-            defaultValue={searchParams.get('startDate') || ""}
+            defaultValue={searchParams.get('startDate') || new Date().toISOString().split("T")[0]}
             onChange={(e) => updateDateParams('startDate', e.target.value)}
           />
         </Box>
@@ -39,7 +39,7 @@ export default function DateFilter() {
             type="date" 
             id="end-date" 
             name="end-date"
-            defaultValue={searchParams.get('endDate') || ""}
+            defaultValue={searchParams.get('endDate') || new Date().toISOString().split("T")[0]}
             onChange={(e) => updateDateParams('endDate', e.target.value)}
           />
         </Box>

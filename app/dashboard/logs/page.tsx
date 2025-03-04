@@ -1,4 +1,4 @@
-import { Grid, Flex, Box, Section } from "@radix-ui/themes";
+import { Flex, Box, Section } from "@radix-ui/themes";
 import Pagination from "@/app/ui/dashboard/logs/pagination";
 import LogsTable from "@/app/ui/dashboard/logs/logs-table";
 import DateFilter from "@/app/ui/dashboard/logs/date-filter";
@@ -15,8 +15,9 @@ export default async function Page(props: {
 })  {
   const searchParams = await props.searchParams;
   const currentPage = Number(searchParams?.page) || 1;
-  const startDate = searchParams?.startDate || '';
-  const endDate = searchParams?.endDate || '';
+  const today = new Date().toISOString().split("T")[0];
+  const startDate = searchParams?.startDate || today;
+  const endDate = searchParams?.endDate || today;
   const totalPages = await fetchAttendancePages(startDate, endDate);
 
 
@@ -33,7 +34,7 @@ export default async function Page(props: {
           <DateFilter />
         </Suspense>
       </Section>
-      <Section style={{paddingBlock: 10}}>
+      <Section style={{paddingBlock: 10, height: 520}}>
         <Suspense>
           <LogsTable startDate={startDate} endDate={endDate} currentPage={currentPage} />
         </Suspense>

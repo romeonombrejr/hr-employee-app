@@ -32,37 +32,50 @@ const ITEMS_PER_PAGE = 10;
 //   );
 
 export async function fetchFilteredAttendanceLogs(
-    currentPage: number, 
-    startDate: string,
-    endDate: string
-  ) {
-    const offset = (currentPage - 1) * ITEMS_PER_PAGE;
-  
-    try {
-      const { userId } = await auth(); // Get logged-in user's ID
-      if (!userId) throw new Error("User not authenticated");
-  
-      // Fetch logs with optional date filters
-      const logs = await sql`
-        SELECT
-          id,
-          clock_in,
-          clock_out
-        FROM time_logs
-        WHERE employee_id = ${userId}
-        ${startDate ? sql`AND clock_in >= ${startDate}` : sql``}
-        ${endDate ? sql`AND clock_out <= ${endDate}` : sql``}
-        ORDER BY clock_in DESC
-        LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
-      `;
-        console.log(logs);
-      return logs;
-      
-    } catch (error) {
-      console.error("Database Error:", error);
-      throw new Error("Failed to fetch attendance logs.");
-    }
+  currentPage: number, 
+  startDate: string,
+  endDate: string
+) {
+  const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+
+  try {
+    const { userId } = await auth(); // Get logged-in user's ID
+    if (!userId) throw new Error("User not authenticated");
+
+    // Convert startDate and endDate to full timestamps
+    const startTimestamp = startDate ? new Date(`${startDate}T00:00:00.000Z`) : null;
+    const endTimestamp = endDate ? new Date(`${endDate}T23:59:59.999Z`) : null;
+
+    // Fetch logs with the new timestamp filters
+    const logs = await sql`
+      SELECT
+        id,
+        clock_in,
+        clock_out
+      FROM time_logs
+      WHERE employee_id = ${userId}
+      ${
+        startTimestamp && endTimestamp
+          ? sql`AND (
+              (clock_in BETWEEN ${startTimestamp} AND ${endTimestamp}) OR
+              (clock_out BETWEEN ${startTimestamp} AND ${endTimestamp})
+            )`
+          : startTimestamp
+          ? sql`AND clock_in >= ${startTimestamp}`
+          : endTimestamp
+          ? sql`AND clock_out <= ${endTimestamp}`
+          : sql``
+      }
+      LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
+    `;
+    
+    return logs;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch attendance logs.");
   }
+}
+
 
 export async function fetchAttendancePages(startDate: string, endDate: string) {
   try {
@@ -70,13 +83,25 @@ export async function fetchAttendancePages(startDate: string, endDate: string) {
     const { userId } = await auth();
     if (!userId) throw new Error("User not authenticated");
 
+    const startTimestamp = startDate ? new Date(`${startDate}T00:00:00.000Z`) : null;
+    const endTimestamp = endDate ? new Date(`${endDate}T23:59:59.999Z`) : null;
+
     const count = await sql<{ count: number }[]>`
       SELECT COUNT(*) 
       FROM time_logs
-      WHERE 
-        employee_id = ${userId} 
-        ${startDate ? sql`AND clock_in >= ${startDate}` : sql``}
-        ${endDate ? sql`AND clock_out <= ${endDate}` : sql``}
+      WHERE employee_id = ${userId} 
+      ${
+        startTimestamp && endTimestamp
+          ? sql`AND (
+              (clock_in BETWEEN ${startTimestamp} AND ${endTimestamp}) OR
+              (clock_out BETWEEN ${startTimestamp} AND ${endTimestamp})
+            )`
+          : startTimestamp
+          ? sql`AND clock_in >= ${startTimestamp}`
+          : endTimestamp
+          ? sql`AND clock_out <= ${endTimestamp}`
+          : sql``
+      }
     `;
 
     const totalPages = Math.ceil(Number(count[0].count) / ITEMS_PER_PAGE);

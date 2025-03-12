@@ -11,7 +11,6 @@ export default async function LogsTable({
     currentPage: number;
 }) {
     const attendanceLogs = await fetchFilteredAttendanceLogs(currentPage, startDate, endDate);
-    console.log(attendanceLogs);
 
     return (
         <Table.Root>

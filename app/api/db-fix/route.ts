@@ -7,17 +7,22 @@ async function seedTimeLogs() {
   
     // Drop the existing time_logs table
     await sql`
-      DROP TABLE IF EXISTS time_logs;
+      DROP TABLE IF EXISTS leave_requests;
     `;
   
     // Recreate the time_logs table without the foreign key reference
     await sql`
-      CREATE TABLE time_logs (
-          id SERIAL PRIMARY KEY,
-          employee_id TEXT NOT NULL,
-          clock_in TIMESTAMPTZ,
-          clock_out TIMESTAMPTZ
-      );
+      CREATE TABLE leave_requests (
+      id SERIAL PRIMARY KEY,
+      employee_id TEXT NOT NULL,
+      leave_type TEXT NOT NULL,       -- e.g., 'VACATION', 'SICK', etc.
+      start_date DATE NOT NULL,
+      end_date DATE NOT NULL,
+      reason TEXT,
+      status TEXT NOT NULL,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
     `;
   }
   

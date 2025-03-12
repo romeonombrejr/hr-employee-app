@@ -68,7 +68,7 @@ export async function fetchFilteredAttendanceLogs(
       }
       LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
     `;
-    
+
     return logs;
   } catch (error) {
     console.error("Database Error:", error);
@@ -111,3 +111,79 @@ export async function fetchAttendancePages(startDate: string, endDate: string) {
     throw new Error("Failed to fetch total number of attendance logs.");
   }
 }
+
+export async function fetchLeaveRequests(
+  currentPage: number,
+  startDate: string,
+  endDate: string
+) {
+  const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+
+  try {
+    const { userId } = await auth();
+    if (!userId) throw new Error("User not authenticated");
+
+    const startTimestamp = startDate ? new Date(`${startDate}T00:00:00.000Z`) : null;
+    const endTimestamp = endDate ? new Date(`${endDate}T23:59:59.999Z`) : null;
+
+    const requests = await sql`
+      SELECT
+        id,
+        leave_type,
+        start_date,
+        end_date,
+        reason,
+        status,
+        created_at
+      FROM leave_requests
+      WHERE employee_id = ${userId}
+      ${
+        startTimestamp && endTimestamp
+          ? sql`AND created_at BETWEEN ${startTimestamp} AND ${endTimestamp}`
+          : startTimestamp
+          ? sql`AND created_at >= ${startTimestamp}`
+          : endTimestamp
+          ? sql`AND created_at <= ${endTimestamp}`
+          : sql``
+      }
+      LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
+    `;
+
+    return requests;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch leave requests.");
+  }
+}
+
+export async function fetchLeaveRequestPages(startDate: string, endDate: string) {
+  try {
+    const { userId } = await auth();
+    if (!userId) throw new Error("User not authenticated");
+
+    const startTimestamp = startDate ? new Date(`${startDate}T00:00:00.000Z`) : null;
+    const endTimestamp = endDate ? new Date(`${endDate}T23:59:59.999Z`) : null;
+
+    const count = await sql<{ count: number }[]>`
+      SELECT COUNT(*)
+      FROM leave_requests
+      WHERE employee_id = ${userId}
+      ${
+        startTimestamp && endTimestamp
+          ? sql`AND created_at BETWEEN ${startTimestamp} AND ${endTimestamp}`
+          : startTimestamp
+          ? sql`AND created_at >= ${startTimestamp}`
+          : endTimestamp
+          ? sql`AND created_at <= ${endTimestamp}`
+          : sql``
+      }
+    `;
+
+    const totalPages = Math.ceil(Number(count[0].count) / ITEMS_PER_PAGE);
+    return totalPages;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch total number of leave requests.");
+  }
+}
+

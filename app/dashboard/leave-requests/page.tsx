@@ -5,6 +5,7 @@ import { Suspense } from "react";
 import { DateFilterSkeleton } from "@/app/ui/skeletons";
 import RequestsTable from "@/app/ui/dashboard/leave-requests/requests-table";
 import { fetchLeaveRequestPages } from "@/app/lib/data";
+import Pagination from "@/app/ui/dashboard/logs/pagination";
 
 export default async function Page(props: {
   searchParams?: Promise<{
@@ -55,6 +56,9 @@ export default async function Page(props: {
           <RequestsTable startDate={startDate} endDate={endDate} currentPage={currentPage}/>
         </Suspense>
       </Section>
+	  <Section style={{ paddingBlock: 5, display: "flex", justifyContent: "center" }}>
+		  <Pagination totalPages={totalPages} />
+	  </Section>
     </Box>
   );
 }
